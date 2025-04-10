@@ -3,9 +3,9 @@ title: "Projeto Estatística"
 toc: true
 ---
 
-## 1. Introdução 
+## 1. Introdução
 
-Neste projeto, será realizado uma análise estatística com o objetivo de investigar possíveis relações entre fatores como idade, horas de estudo, frequência escolar, participação em atividades extracurriculares, nível socioeconômico e motivação dos estudantes e seu impacto no desempenho acadêmico, representado pela variável **notas anteriores**.
+Neste projeto, será realizado uma análise estatística com o objetivo de investigar possíveis relações entre fatores, como, por exemplo, idade, horas de estudo, e como impactam o desempenho acadêmico de um estudante.
 
 ```{r}
 # Instala biblioteca caso necessário 
@@ -16,7 +16,7 @@ library(readr)
 dados <- read_xlsx("base_de_dados.xlsx")
 ```
 
-## 1.1 Os Dados
+## 2. A Base de Dados
 
 A base de dados é composta por 943 observações e 9 variáveis, cada uma representando uma característica ou comportamento relacionado ao desempenho escolar. Abaixo estão listadas as variáveis investigadas, seus significados e respectivas unidades de medida:
 
@@ -100,3 +100,19 @@ library(skimr)
 skim(dados)
 
 ```
+
+### 2.1 Valores Ausentes
+
+Com base na tabela de análise exploratória gerada, podemos identificar que 8 observações da base de dados não possuem a variável notas anteriores. Além disso, também podemos verificar que a variável horas de estudo não está presente em 10 observações da base de dados.
+
+Assim sendo, é notório a necessidade de tratar as observações ausentes. Nesse contexto, uma boa estratégia para solucionar a ausência dessas observações é imputar valores como a mediana da respectiva variável nas observações em que ela está ausente pois é menos sensível a outliers.
+
+### 2.1 Potenciais Outliers
+
+Outro ponto importante observado na tabela de análise exploratória é a presença de possíveis outliers nas seguinte variávei:
+
+-   Horas de estudo: O valor mínimo observado é -0.2 (a unidade de medidas horas não pode ser negativa);
+
+Portanto, isso indica que potencialmente precisaremos tratar este caso substituindo o valor distoante observado por 0 ou removendo-o.
+
+## 3 Análise Bivariada

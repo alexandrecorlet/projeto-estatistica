@@ -80,7 +80,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introdução" id="toc-introdução" class="nav-link active" data-scroll-target="#introdução">1. Introdução</a></li>
-  <li><a href="#os-dados" id="toc-os-dados" class="nav-link" data-scroll-target="#os-dados">1.1 Os Dados</a></li>
+  <li><a href="#a-base-de-dados" id="toc-a-base-de-dados" class="nav-link" data-scroll-target="#a-base-de-dados">2. A Base de Dados</a>
+  <ul class="collapse">
+  <li><a href="#valores-ausentes" id="toc-valores-ausentes" class="nav-link" data-scroll-target="#valores-ausentes">2.1 Valores Ausentes</a></li>
+  <li><a href="#potenciais-outliers" id="toc-potenciais-outliers" class="nav-link" data-scroll-target="#potenciais-outliers">2.1 Potenciais Outliers</a></li>
+  </ul></li>
+  <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3 Análise Bivariada</a></li>
   </ul>
 </nav>
 </div>
@@ -107,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introdução" class="level2">
 <h2 class="anchored" data-anchor-id="introdução">1. Introdução</h2>
-<p>Neste projeto, será realizado uma análise estatística com o objetivo de investigar possíveis relações entre fatores como idade, horas de estudo, frequência escolar, participação em atividades extracurriculares, nível socioeconômico e motivação dos estudantes e seu impacto no desempenho acadêmico, representado pela variável <strong>notas anteriores</strong>.</p>
+<p>Neste projeto, será realizado uma análise estatística com o objetivo de investigar possíveis relações entre fatores, como, por exemplo, idade, horas de estudo, e como impactam o desempenho acadêmico de um estudante.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala biblioteca caso necessário </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(readxl)) <span class="fu">install.packages</span>(<span class="st">"readxl"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -120,8 +125,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dados <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"base_de_dados.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="os-dados" class="level2">
-<h2 class="anchored" data-anchor-id="os-dados">1.1 Os Dados</h2>
+<section id="a-base-de-dados" class="level2">
+<h2 class="anchored" data-anchor-id="a-base-de-dados">2. A Base de Dados</h2>
 <p>A base de dados é composta por 943 observações e 9 variáveis, cada uma representando uma característica ou comportamento relacionado ao desempenho escolar. Abaixo estão listadas as variáveis investigadas, seus significados e respectivas unidades de medida:</p>
 <ol type="1">
 <li><p>Idade</p>
@@ -402,6 +407,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<section id="valores-ausentes" class="level3">
+<h3 class="anchored" data-anchor-id="valores-ausentes">2.1 Valores Ausentes</h3>
+<p>Com base na tabela de análise exploratória gerada, podemos identificar que 8 observações da base de dados não possuem a variável notas anteriores. Além disso, também podemos verificar que a variável horas de estudo não está presente em 10 observações da base de dados.</p>
+<p>Assim sendo, é notório a necessidade de tratar as observações ausentes. Nesse contexto, uma boa estratégia para solucionar a ausência dessas observações é imputar valores como a mediana da respectiva variável nas observações em que ela está ausente pois é menos sensível a outliers.</p>
+</section>
+<section id="potenciais-outliers" class="level3">
+<h3 class="anchored" data-anchor-id="potenciais-outliers">2.1 Potenciais Outliers</h3>
+<p>Outro ponto importante observado na tabela de análise exploratória é a presença de possíveis outliers nas seguinte variávei:</p>
+<ul>
+<li>Horas de estudo: O valor mínimo observado é -0.2 (a unidade de medidas horas não pode ser negativa);</li>
+</ul>
+<p>Portanto, isso indica que potencialmente precisaremos tratar este caso substituindo o valor distoante observado por 0 ou removendo-o.</p>
+</section>
+</section>
+<section id="análise-bivariada" class="level2">
+<h2 class="anchored" data-anchor-id="análise-bivariada">3 Análise Bivariada</h2>
 </section>
 
 </main>

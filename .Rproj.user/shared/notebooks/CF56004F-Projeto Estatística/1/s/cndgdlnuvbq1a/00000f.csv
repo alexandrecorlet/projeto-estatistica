@@ -1,6 +1,0 @@
-"0","# Instala biblioteca caso necessário "
-"0","if (!require(readxl)) install.packages(""readxl"") "
-"0","# Importando biblioteca para ler arquivo .xslx "
-"0","library(readr) "
-"0","# Lendo base de dados "
-"0","dados <- read_xlsx(""base_de_dados.xlsx"")"
