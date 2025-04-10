@@ -116,3 +116,50 @@ Outro ponto importante observado na tabela de análise exploratória é a presen
 Portanto, isso indica que potencialmente precisaremos tratar este caso substituindo o valor distoante observado por 0 ou removendo-o.
 
 ## 3 Análise Bivariada
+
+Nesta etapa iremos realizar uma análise entre a relação as variáveis (mais especificamente entre duas). Isto é importante pois permite identificarmos como as variáveis na base de dados influem uma na outra. Portanto, essa análise busca responder perguntas como:
+
+-   *Será que quanto mais horas de estudos possuir maior será seu desempenho/rendimento?*
+
+Por fim, é importante destacar que esse tipo de análise depende do tipo da variável estatística. Sendo assim, realizaremos uma análise para as variáveis quantitativas e uma outra para as variáveis categóricas (ou qualitativas).
+
+### 3.1 Análise Bivariada (Variáveis Numéricas)
+
+Iniciamos a análise para as variáveis numéricas. Para fazer isso, utilizamos o seguinte código em R para gerar a matriz de correlação de tais variáveis:
+
+```{r}
+
+if (!require(dplyr)) install.packages("dplyr")
+library(dplyr)
+
+# Filtra os dados numéricos
+dados_numericos <- dados %>% select_if(is.numeric)
+# Gera matriz de correlação
+corr_matrix <- cor(dados_numericos, use="complete.obs")
+# Imprimindo matriz de correlação
+corr_matrix
+```
+
+Utilizando a biblioteca corrplot:
+
+```{r}
+if (!require(corrplot)) install.packages("corrplot")
+library(corrplot)
+
+# Plota a matriz de correlação das variáveis
+corrplot(corr_matrix, method = "color", addCoef.col = "black")
+```
+
+A partir da matriz de correlação, podemos destacar as seguintes observações:
+
+1.  Existe indícios de uma **correlação forte positiva** (90%) entre horas de estudo e motivação. Isso implica que alunos motivados estudam mais. Além disso, a alta correlação indica que podemos simplificar o modelo de regressão linear simples pois ambas variáveis tendem a explicar de forma igual o rendimento acadêmico do aluno.
+
+2.  Frequência e desempenho acadêmicos possuem **correlação moderada positiva** (63%). Esses dados indicam que alunos que frequentam as aulas regularmente tendem a possuir um rendimento ou desempenho acadêmico melhor.
+
+3.  Horas de estudo e desempenho possuem **correlação baixa positiva** (37%). Isso indica que alunos que estudam mais, possuem um melhor desempenho acadêmico.
+
+4.  Desempenho e motivação **correlação baixa positiva** (27%). Isso indica que quanto mais motivado um aluno for, melhor será seu desempenho em suas atividades acadêmicas.
+
+5.  Desempenho e notas anteriores possuem **correlação baixa positiva** (13%). Logo, as notas de um aluno serão melhores se ele possuir um bom desempenho.
+
+6.  Sono e desempenho possuem **correlação baixa negativa** (13%). Portanto, é um indício de que alunos que dormem menos, tendem a ter um desempenho pior em seus estudos.

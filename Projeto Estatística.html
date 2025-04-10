@@ -85,7 +85,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#valores-ausentes" id="toc-valores-ausentes" class="nav-link" data-scroll-target="#valores-ausentes">2.1 Valores Ausentes</a></li>
   <li><a href="#potenciais-outliers" id="toc-potenciais-outliers" class="nav-link" data-scroll-target="#potenciais-outliers">2.1 Potenciais Outliers</a></li>
   </ul></li>
-  <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3 Análise Bivariada</a></li>
+  <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3 Análise Bivariada</a>
+  <ul class="collapse">
+  <li><a href="#análise-bivariada-variáveis-numéricas" id="toc-análise-bivariada-variáveis-numéricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-numéricas">3.1 Análise Bivariada (Variáveis Numéricas)</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -423,6 +426,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="análise-bivariada" class="level2">
 <h2 class="anchored" data-anchor-id="análise-bivariada">3 Análise Bivariada</h2>
+<p>Nesta etapa iremos realizar uma análise entre a relação as variáveis (mais especificamente entre duas). Isto é importante pois permite identificarmos como as variáveis na base de dados influem uma na outra. Portanto, essa análise busca responder perguntas como:</p>
+<ul>
+<li><em>Será que quanto mais horas de estudos possuir maior será seu desempenho/rendimento?</em></li>
+</ul>
+<p>Por fim, é importante destacar que esse tipo de análise depende do tipo da variável estatística. Sendo assim, realizaremos uma análise para as variáveis quantitativas e uma outra para as variáveis categóricas (ou qualitativas).</p>
+<section id="análise-bivariada-variáveis-numéricas" class="level3">
+<h3 class="anchored" data-anchor-id="análise-bivariada-variáveis-numéricas">3.1 Análise Bivariada (Variáveis Numéricas)</h3>
+<p>Iniciamos a análise para as variáveis numéricas. Para fazer isso, utilizamos o seguinte código em R para gerar a matriz de correlação de tais variáveis:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(dplyr)) <span class="fu">install.packages</span>(<span class="st">"dplyr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: dplyr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtra os dados numéricos</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dados_numericos <span class="ot">&lt;-</span> dados <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(is.numeric)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Gera matriz de correlação</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(dados_numericos, <span class="at">use=</span><span class="st">"complete.obs"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimindo matriz de correlação</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>corr_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        idade horas_estudo   frequencia    motivacao
+idade             1.000000000  0.003809963 -0.025375870 -0.001900414
+horas_estudo      0.003809963  1.000000000 -0.009137801  0.895871170
+frequencia       -0.025375870 -0.009137801  1.000000000 -0.001685700
+motivacao        -0.001900414  0.895871170 -0.001685700  1.000000000
+notas_anteriores  0.024191432  0.001085386  0.040987491  0.023395068
+sono              0.013095813 -0.021474372 -0.005783914  0.005410990
+desempenho       -0.006650054  0.371337708  0.625809456  0.272905989
+                 notas_anteriores         sono   desempenho
+idade                 0.024191432  0.013095813 -0.006650054
+horas_estudo          0.001085386 -0.021474372  0.371337708
+frequencia            0.040987491 -0.005783914  0.625809456
+motivacao             0.023395068  0.005410990  0.272905989
+notas_anteriores      1.000000000 -0.041963175  0.131835848
+sono                 -0.041963175  1.000000000 -0.125593182
+desempenho            0.131835848 -0.125593182  1.000000000</code></pre>
+</div>
+</div>
+<p>Utilizando a biblioteca corrplot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(corrplot)) <span class="fu">install.packages</span>(<span class="st">"corrplot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: corrplot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>corrplot 0.95 loaded</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plota a matriz de correlação das variáveis</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(corr_matrix, <span class="at">method =</span> <span class="st">"color"</span>, <span class="at">addCoef.col =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto-Estatística_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A partir da matriz de correlação, podemos destacar as seguintes observações:</p>
+<ol type="1">
+<li><p>Existe indícios de uma <strong>correlação forte positiva</strong> (90%) entre horas de estudo e motivação. Isso implica que alunos motivados estudam mais. Além disso, a alta correlação indica que podemos simplificar o modelo de regressão linear simples pois ambas variáveis tendem a explicar de forma igual o rendimento acadêmico do aluno.</p></li>
+<li><p>Frequência e desempenho acadêmicos possuem <strong>correlação moderada positiva</strong> (63%). Esses dados indicam que alunos que frequentam as aulas regularmente tendem a possuir um rendimento ou desempenho acadêmico melhor.</p></li>
+<li><p>Horas de estudo e desempenho possuem <strong>correlação baixa positiva</strong> (37%). Isso indica que alunos que estudam mais, possuem um melhor desempenho acadêmico.</p></li>
+<li><p>Desempenho e motivação <strong>correlação baixa positiva</strong> (27%). Isso indica que quanto mais motivado um aluno for, melhor será seu desempenho em suas atividades acadêmicas.</p></li>
+<li><p>Desempenho e notas anteriores possuem <strong>correlação baixa positiva</strong> (13%). Logo, as notas de um aluno serão melhores se ele possuir um bom desempenho.</p></li>
+<li><p>Sono e desempenho possuem <strong>correlação baixa negativa</strong> (13%). Portanto, é um indício de que alunos que dormem menos, tendem a ter um desempenho pior em seus estudos.</p></li>
+</ol>
+</section>
 </section>
 
 </main>
