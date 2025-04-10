@@ -1,0 +1,102 @@
+---
+title: "Projeto Estatística"
+toc: true
+---
+
+## 1. Introdução 
+
+Neste projeto, será realizado uma análise estatística com o objetivo de investigar possíveis relações entre fatores como idade, horas de estudo, frequência escolar, participação em atividades extracurriculares, nível socioeconômico e motivação dos estudantes e seu impacto no desempenho acadêmico, representado pela variável **notas anteriores**.
+
+```{r}
+# Instala biblioteca caso necessário 
+if (!require(readxl)) install.packages("readxl") 
+# Importando biblioteca para ler arquivo .xslx 
+library(readr) 
+# Lendo base de dados 
+dados <- read_xlsx("base_de_dados.xlsx")
+```
+
+## 1.1 Os Dados
+
+A base de dados é composta por 943 observações e 9 variáveis, cada uma representando uma característica ou comportamento relacionado ao desempenho escolar. Abaixo estão listadas as variáveis investigadas, seus significados e respectivas unidades de medida:
+
+1.  Idade
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Indica a idade do aluno
+
+    -   Unidade de medida: Anos
+
+2.  Horas de estudos
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Indica o tempo total de estudo de um aluno
+
+    -   Unidade de medida: Horas
+
+3.  Frequência
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Representa a frequência do aluno nas aulas
+
+    -   Unidade de Medida: Percentual (%)
+
+4.  Atividades extracurriculares
+
+    -   Tipo: Categórica
+
+    -   Descrição: Indica se o aluno participa de atividades extracurriculares
+
+    -   Unidade de medida: Pode ser Sim/Não
+
+5.  Nível socioeconômico
+
+    -   Tipo: Categórica
+
+    -   Descrição: Representa a condição econômica e social do aluno
+
+    -   Unidade de medida: Pode ser Alto/Médio/Baixo
+
+6.  Motivação
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Mede o nível de motivação do aluno em relação aos estudos
+
+    -   Unidade de medida: Percentual (%)
+
+7.  Notas anteriores
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Refere-se ao desempenho escolar (média) de um aluno em avaliações escolares
+
+    -   Unidade de medida: Nota numérica (de 0 a 10)
+
+8.  Sono
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Indica o tempo médio de sono diário de um aluno
+
+    -   Unidade de medida: Horas
+
+9.  Desempenho
+
+    -   Tipo: Quantitativa
+
+    -   Descrição: Refere-se ao desempenho escolar de um aluno
+
+    -   Unidade de medida: Percentual (%)
+
+Sumário da base de dados:
+
+```{r}
+if (!require(skimr)) install.packages("skimr")
+library(skimr)
+skim(dados)
+
+```
