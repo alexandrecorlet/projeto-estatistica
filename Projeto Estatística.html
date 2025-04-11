@@ -88,6 +88,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3 Análise Bivariada</a>
   <ul class="collapse">
   <li><a href="#análise-bivariada-variáveis-numéricas" id="toc-análise-bivariada-variáveis-numéricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-numéricas">3.1 Análise Bivariada (Variáveis Numéricas)</a></li>
+  <li><a href="#análise-bivariada-variáveis-categóricas" id="toc-análise-bivariada-variáveis-categóricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-categóricas">3.2 Análise Bivariada (Variáveis Categóricas)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -510,6 +511,60 @@ desempenho            0.131835848 -0.125593182  1.000000000</code></pre>
 <li><p>Desempenho e notas anteriores possuem <strong>correlação baixa positiva</strong> (13%). Logo, as notas de um aluno serão melhores se ele possuir um bom desempenho.</p></li>
 <li><p>Sono e desempenho possuem <strong>correlação baixa negativa</strong> (13%). Portanto, é um indício de que alunos que dormem menos, tendem a ter um desempenho pior em seus estudos.</p></li>
 </ol>
+</section>
+<section id="análise-bivariada-variáveis-categóricas" class="level3">
+<h3 class="anchored" data-anchor-id="análise-bivariada-variáveis-categóricas">3.2 Análise Bivariada (Variáveis Categóricas)</h3>
+<p>Agora, partiremos para uma análise das variáveis numéricas em função das categóricas. Nesse contexto, plotaremos um gráfico boxplot que permite obter insights sobre como a variável desempenho se comporta em função de uma determinada variável categórica (i.e atividade extracurricular, etc.). Nele, podemos observar a mediana da variável categórica.</p>
+<p>Instalando package necessário:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala pacote necessário</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(ggpplot2)) <span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggpplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
+logical.return = TRUE, : there is no package called 'ggpplot2'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following package(s) will be installed:
+- ggplot2 [3.5.2]
+These packages will be installed into "~/Projeto Estatística/renv/library/macos/R-4.4/x86_64-apple-darwin20".
+
+# Installing packages --------------------------------------------------------
+- Installing ggplot2 ...                        OK [linked from cache]
+Successfully installed 1 package in 28 milliseconds.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa biblioteca ggplot2</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Primeiro, analisamos para variável categórica atividade extracurricular. Vamos ver como o desempenho se comporta em função dessa variável categórica:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando boxplot: desempenho acadêmico em função de atividade extracurricular</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dados, <span class="fu">aes</span>(<span class="at">x =</span> atividade_extracurricular, <span class="at">y =</span> desempenho)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto-Estatística_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Conclusão</strong>: Interpretando o gráfico plotado, é notório que alunos engajados em atividades extracurriculares possuem um melhor desempenho quando comparado a alunos que não participam de tais atividades. Logo, essa observação é estatisticamente evidente quando observamos a mediana dos dois boxes acima. Outro ponto importante a ser destacado é que podemos observar a presença de outliers (valores distoantes ou atípicos). Isso pode ser observado nos pontos mais extremos que ficam abaixo e acima dos boxes. Finalmente, isto indica que de fato há uma correlação entre as duas váriaveis.</p>
+<p>Agora analisaremos o gráfico da variável categórica denominada nível socioeconômico:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando boxplot: desempenho acadêmico em função do nível socioeconômico</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dados, <span class="fu">aes</span>(<span class="at">x =</span> nivel_socioeconomico, <span class="at">y =</span> desempenho)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto-Estatística_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Conclusão</strong>: Analisando o gráfico acima, podemos observar que diferentes níveis socioeconômicos não impactam no desempenho acadêmico de um aluno. Em outras palavras, apesar de haver uma leve diferença nas medianas dos boxplot, essa diferença é mínima ou desprezível quando analisamos estatisticamente. Além disso, assim como na análise anterior, também podemos notar a presença de outliers nesse gráfico. Por fim, podemos concluir que não há uma correlação, ou seja, que estatisticamente falando, o nível socioeconômico de um aluno não impacta em seu desempenho educacional.</p>
 </section>
 </section>
 

@@ -163,3 +163,35 @@ A partir da matriz de correlação, podemos destacar as seguintes observações:
 5.  Desempenho e notas anteriores possuem **correlação baixa positiva** (13%). Logo, as notas de um aluno serão melhores se ele possuir um bom desempenho.
 
 6.  Sono e desempenho possuem **correlação baixa negativa** (13%). Portanto, é um indício de que alunos que dormem menos, tendem a ter um desempenho pior em seus estudos.
+
+### 3.2 Análise Bivariada (Variáveis Categóricas)
+
+Agora, partiremos para uma análise das variáveis numéricas em função das categóricas. Nesse contexto, plotaremos um gráfico boxplot que permite obter insights sobre como a variável desempenho se comporta em função de uma determinada variável categórica (i.e atividade extracurricular, etc.). Nele, podemos observar a mediana da variável categórica.
+
+Instalando package necessário:
+
+```{r}
+# Instala pacote necessário
+if (!require(ggpplot2)) install.packages("ggplot2")
+# Importa biblioteca ggplot2
+library(ggplot2)
+```
+
+Primeiro, analisamos para variável categórica atividade extracurricular. Vamos ver como o desempenho se comporta em função dessa variável categórica:
+
+```{r}
+# Plotando boxplot: desempenho acadêmico em função de atividade extracurricular
+ggplot(dados, aes(x = atividade_extracurricular, y = desempenho)) +
+  geom_boxplot() + theme_minimal()
+```
+
+**Conclusão**: Interpretando o gráfico plotado, é notório que alunos engajados em atividades extracurriculares possuem um melhor desempenho quando comparado a alunos que não participam de tais atividades. Logo, essa observação é estatisticamente evidente quando observamos a mediana dos dois boxes acima. Outro ponto importante a ser destacado é que podemos observar a presença de outliers (valores distoantes ou atípicos). Isso pode ser observado nos pontos mais extremos que ficam abaixo e acima dos boxes. Finalmente, isto indica que de fato há uma correlação entre as duas váriaveis.
+
+Agora analisaremos o gráfico da variável categórica denominada nível socioeconômico:
+
+```{r}
+# Plotando boxplot: desempenho acadêmico em função do nível socioeconômico
+ggplot(dados, aes(x = nivel_socioeconomico, y = desempenho)) + geom_boxplot() + theme_minimal()
+```
+
+**Conclusão**: Analisando o gráfico acima, podemos observar que diferentes níveis socioeconômicos não impactam no desempenho acadêmico de um aluno. Em outras palavras, apesar de haver uma leve diferença nas medianas dos boxplot, essa diferença é mínima ou desprezível quando analisamos estatisticamente. Além disso, assim como na análise anterior, também podemos notar a presença de outliers nesse gráfico. Por fim, podemos concluir que não há uma correlação, ou seja, que estatisticamente falando, o nível socioeconômico de um aluno não impacta em seu desempenho educacional.
