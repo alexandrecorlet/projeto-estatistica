@@ -363,3 +363,187 @@ BIC(modelo_sem_horas_estudo)
 ```
 
 Nota-se, através da análise realizada, que o modelo mais adequado e ajustado é aquele sem a variável `motivacao` e com a variável `horas_estudo.`, ou seja, o `modelo_sem_motivacao`.
+
+## 6. Análise de Resíduos / Checando Pressupostos
+
+Nesta etapa realizaremos a análise de resíduos sobre o modelo selecionado `modelo_sem_motivacao` .
+
+### 6.1 Checando Pressuposto com R `base`
+
+```{R}
+plot(modelo_sem_motivacao)
+```
+
+Para o gráfico Q-Q:
+
+-   **Interpretação Q-Q**: Os pontos no gráfico Q-Q estão razoavelmente próximos da linha reta, com pequenas desvios nas caudas.
+
+-   **Conclusão**: Os resíduos seguem aproximadamente uma distribuição normal. Pequenas discrepâncias nas caudas são comuns e, se não forem severas, não comprometem muito a análise. A normalidade parece estar **razoavelmente atendida**.
+
+Para o Scale Location Plot (Homoscedasticidade):
+
+-   **Interpretação**: A linha vermelha (loess) está relativamente horizontal, e os pontos estão dispersos de forma aleatória.
+
+-   **Conclusão**: Não há um padrão claro de heterocedasticidade (variância dos resíduos constante). Isso indica que o pressuposto de homocedasticidade está **aceitavelmente atendido**.
+
+Para o Resíduos vs Leverage (Influência de Pontos):
+
+-   **Interpretação**: A maioria dos pontos está agrupada no centro, com poucos pontos com alta alavancagem ou influência (sem ultrapassar a linha de Cook).
+
+-   **Conclusão**: Não há indícios claros de **outliers influentes** que possam distorcer fortemente o modelo. Há alguns casos com alavancagem ligeiramente maior, mas nada crítico à primeira vista.
+
+### 6.2 Checando pressuposto com o pacote `easystats`
+
+Neste caso, realizaremos checagens específicas. Primeiramente no modelo completo `modelo`, logo depois no modelo ajustado `modelo_sem_motivacao` .
+
+### 6.2.1 Checagens específicas sobre o modelo completo: `modelo` 
+
+Checando se possuí distribuição normal (importante pois é um requisito para tudo que estudamos e utilizamos até agora):
+
+```{R}
+if(!require(easystats)) install.packages("easystats")
+
+library(easystats)
+
+check_normality(modelo) #%>% plot()
+```
+
+```{R}
+check_normality(modelo) %>% plot()
+
+```
+
+**Conclusão:** O modelo inicial segue o modelo de distribuição normal.
+
+Checando homoscedasticidade:
+
+```{R}
+check_heteroscedasticity(modelo)
+```
+
+```{R}
+check_heteroscedasticity(modelo) %>% plot()
+```
+
+**Conclusão**: O modelo apresenta **homocedasticidade**, ou seja, a variância dos erros parece constante ao longo dos valores ajustados (um dos principais pressupostos da regressão linear).
+
+Checando outliers:
+
+```{R}
+check_outliers(modelo)
+```
+
+```{R}
+check_outliers(modelo) %>% plot()
+```
+
+**Conclusão**: Não foram detectados outliers influentes no modelo.
+
+Checando colinearidade:
+
+```{R}
+check_collinearity(modelo)
+```
+
+```{R}
+if (require(magrittr)) install.packages("magrittr")
+library(magrittr)
+
+check_collinearity(modelo) %>% plot()
+```
+
+**Conclusão**: Isso comprova as hipóteses anteriores de que `motivacao` e `horas_estudo` possuíam uma colinearidade moderada.
+
+### 6.2.2 Checagem específica sobre o modelo ajustado: `modelo_sem_motivacao` 
+
+Checando se possuí distribuição normal (importante pois é um requisito para tudo que estudamos e utilizamos até agora):
+
+```{R}
+check_normality(modelo_sem_motivacao)
+```
+
+```{R}
+check_normality(modelo_sem_motivacao) %>% plot()
+```
+
+**Conclusão**: O modelo ajustadosegue tem distribuição normal.
+
+Checando heterocedasticidade:
+
+```{R}
+check_heteroscedasticity(modelo_sem_motivacao)
+```
+
+```{R}
+check_heteroscedasticity(modelo_sem_motivacao) %>% plot()
+```
+
+**Conclusão**: O modelo ajustado apresenta **homocedasticidade**, ou seja, a variância dos erros parece constante ao longo dos valores ajustados (um dos principais pressupostos da regressão linear).
+
+Checando outliers:
+
+```{R}
+check_outliers(modelo_sem_motivacao)
+```
+
+```{R}
+check_outliers(modelo_sem_motivacao) %>% plot()
+```
+
+**Conclusão**: Não foram detectados outliers influentes no modelo ajustado.
+
+Checando colinearidade:
+
+```{R}
+check_collinearity(modelo_sem_motivacao)
+```
+
+```{R}
+check_collinearity(modelo_sem_motivacao) %>% plot()
+```
+
+**Conclusão**: O resultado dessa checagem comprova que, de fato, removendo a variável `motivação` e mantendo a `horas_estudo` resolvemos a multicolinearidade do modelo completo!
+
+## 7. Coeficientes/Parâmetros Padronizados
+
+Instalando o pacotes necessários:
+
+```{R}
+if (require(sandwich)) install.packages("sandwich")
+if (require(knitr)) install.packages(c("knitr", "kableExtra"))
+
+library(sandwich)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+```
+
+```{R}
+# Coeficientes padronizados e EP gerados por bootstrapping
+std <- parameters(modelo_sem_motivacao, standardize = "basic", vcov = "vcovBS", 
+                  vcov_args = list(R= 2000) 
+                    )
+```
+
+### 7.1 Resultado
+
+```{R}
+std %>%
+  select(-CI, -df_error) %>%
+  kable(digits = 3, caption = "Coeficientes de regressão") %>%
+  kable_styling(full_width = FALSE)
+```
+
+**Conclusão**:
+
+-   **Frequência às aulas** é o fator mais determinante no desempenho;
+
+-   **Horas de estudo** e **participação em atividades extracurriculares** também têm impactos relevantes;
+
+<!-- -->
+
+-   **Sono** aparece com impacto negativo, o que pode exigir uma análise mais profunda;
+
+-   O modelo está capturando bem os principais fatores que afetam o desempenho.
+
+## 8. Previsões
