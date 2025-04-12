@@ -90,7 +90,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#análise-bivariada-variáveis-numéricas" id="toc-análise-bivariada-variáveis-numéricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-numéricas">3.1 Análise Bivariada (Variáveis Numéricas)</a></li>
   <li><a href="#análise-bivariada-variáveis-categóricas" id="toc-análise-bivariada-variáveis-categóricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-categóricas">3.2 Análise Bivariada (Variáveis Categóricas)</a></li>
   </ul></li>
-  <li><a href="#análise-de-regressão" id="toc-análise-de-regressão" class="nav-link" data-scroll-target="#análise-de-regressão">4. Análise de Regressão</a></li>
+  <li><a href="#análise-de-regressão" id="toc-análise-de-regressão" class="nav-link" data-scroll-target="#análise-de-regressão">4. Análise de Regressão</a>
+  <ul class="collapse">
+  <li><a href="#análise-da-significância-estatitística-das-variáveis" id="toc-análise-da-significância-estatitística-das-variáveis" class="nav-link" data-scroll-target="#análise-da-significância-estatitística-das-variáveis">4.1 Análise da Significância Estatitística das Variáveis</a></li>
+  <li><a href="#diagnóstico-de-multicolinearidade" id="toc-diagnóstico-de-multicolinearidade" class="nav-link" data-scroll-target="#diagnóstico-de-multicolinearidade">4.2 Diagnóstico de Multicolinearidade</a></li>
+  </ul></li>
+  <li><a href="#seleção-do-modelo" id="toc-seleção-do-modelo" class="nav-link" data-scroll-target="#seleção-do-modelo">5. Seleção do Modelo</a>
+  <ul class="collapse">
+  <li><a href="#remoção-das-variáveis-não-significativas" id="toc-remoção-das-variáveis-não-significativas" class="nav-link" data-scroll-target="#remoção-das-variáveis-não-significativas">5.1 Remoção das Variáveis Não Significativas</a></li>
+  <li><a href="#motivação-ou-horas-de-estudo-resolvendo-o-grande-elefante-branco-na-sala-multicolinearidade" id="toc-motivação-ou-horas-de-estudo-resolvendo-o-grande-elefante-branco-na-sala-multicolinearidade" class="nav-link" data-scroll-target="#motivação-ou-horas-de-estudo-resolvendo-o-grande-elefante-branco-na-sala-multicolinearidade">5.2 Motivação ou Horas de Estudo? Resolvendo O Grande Elefante Branco na Sala: Multicolinearidade</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -534,7 +543,7 @@ These packages will be installed into "~/Projeto Estatística/renv/library/macos
 
 # Installing packages --------------------------------------------------------
 - Installing ggplot2 ...                        OK [linked from cache]
-Successfully installed 1 package in 74 milliseconds.</code></pre>
+Successfully installed 1 package in 13 milliseconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa biblioteca ggplot2</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -578,6 +587,8 @@ Successfully installed 1 package in 74 milliseconds.</code></pre>
 <li><p>Verificar a capacidade preditiva do modelo por meio do coeficiente de determinação (R²);</p></li>
 <li><p>Análisar resíduos.</p></li>
 </ul>
+<section id="análise-da-significância-estatitística-das-variáveis" class="level3">
+<h3 class="anchored" data-anchor-id="análise-da-significância-estatitística-das-variáveis">4.1 Análise da Significância Estatitística das Variáveis</h3>
 <p>Assim sendo, iniciaremos a análise implementando o nosso modelo e gerando um sumário estatístico. Através desse sumário, poderemos, por exemplo, avaliar a significância estatística das variáveis.</p>
 <p>Criando o modelo de regressão linear e exibindo um sumário:</p>
 <div class="cell">
@@ -628,9 +639,9 @@ F-statistic: 211.1 on 9 and 915 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><strong>Interpretação</strong>: Considerando um <strong>nível de significância de 5% (α = 0.05),</strong> os dados do modelo de <strong>regressão linear múltipla</strong> e sabendo que as variáveis que são estaticamente significativas para o modelo são aquelas com <strong>p-valor &lt; 0.05,</strong> podemos concluir que as seguintes variáveis tem um efeito estatisticamente significativo para explicar o <strong>desempenho do aluno</strong>:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 39%">
-<col style="width: 20%">
-<col style="width: 39%">
+<col style="width: 38%">
+<col style="width: 23%">
+<col style="width: 38%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -696,6 +707,306 @@ F-statistic: 211.1 on 9 and 915 DF,  p-value: &lt; 2.2e-16</code></pre>
 </tbody>
 </table>
 <p><strong>Observação</strong>: a variável <code>nivel_socioeconomico</code> é categórica. Isso significa que ela está sendo comparada a uma classe referência. No nosso caso a referência é <code>nivel_socioeconomicoAlto</code> . Como nenhuma das classes não possui um efeito estatisticamente significativo, podemos desconsiderá-la.</p>
+</section>
+<section id="diagnóstico-de-multicolinearidade" class="level3">
+<h3 class="anchored" data-anchor-id="diagnóstico-de-multicolinearidade">4.2 Diagnóstico de Multicolinearidade</h3>
+<p>Conforme observamos na análise da significância, o coeficiente estimado da variável <code>motivacao</code> resultou em um valog negativo, porém, não faz sentido, pois alunos mais motivados tendem a ter um melhor desempenho. Quando inconsistências assim ocorrem em nossa análise isso pode nos indicar que há uma <strong>multicolinearidade</strong> entre duas ou mais variáveis.</p>
+<p>Um dos objetivos da análise de regressão é analisar de maneira isolada a relação entre a variável de interesse (no nosso caso <code>desempenho</code>) e as demais variáveis (<code>idade</code>, <code>notas_anteriores</code>, etc.). Nesse contexto, quando duas ou mais variáveis são altamente correlacionadas fica difícil de estimar a correlação entre as variáveis de forma independente. Este problema é chamado de <strong>multicolinearidade.</strong></p>
+<p>A fim de investigar se há multicolinearidade ou não em nosso modelo, utilizaremos a medida estatística conhecida como <strong>Variance Inflation Factor (VIF).</strong> A VIF começa com o valor 1 e não possuí um limite superior. De forma resumida ela funciona da seguinte maneira:</p>
+<ul>
+<li><p>VIF = 1 Indica que não há multicolinearidade;</p></li>
+<li><p>1 &lt; VIF &lt;= 5 indica que há uma correlação moderada</p></li>
+<li><p>VIF &gt; 5 indica que há uma forte correlação</p></li>
+</ul>
+<p>Calculando o valor da medida estatística VIF:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(car)) <span class="fu">install.packages</span>(<span class="st">"car"</span>)  <span class="co"># pacote que possui a função vif</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: car</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'car'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    recode</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following package(s) will be installed:
+- car [3.1-3]
+These packages will be installed into "~/Projeto Estatística/renv/library/macos/R-4.4/x86_64-apple-darwin20".
+
+# Installing packages --------------------------------------------------------
+- Installing car ...                            OK [linked from cache]
+Successfully installed 1 package in 8.6 milliseconds.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimindo medida estatística vif para o nosso modelo</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(modelo) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mod, data = structure(list(desempenho = c(29.7,
+: the response appeared on the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mod, data = structure(list(desempenho = c(29.7,
+: problem with term 9 in model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                              GVIF Df GVIF^(1/(2*Df))
+idade                     1.003597  1        1.001797
+horas_estudo              5.115839  1        2.261822
+frequencia                1.004422  1        1.002208
+atividade_extracurricular 1.008862  1        1.004421
+nivel_socioeconomico      1.013332  2        1.003316
+motivacao                 5.109902  1        2.260509
+notas_anteriores          1.009673  1        1.004825
+sono                      1.009262  1        1.004620
+desempenho                9.283433  0             Inf</code></pre>
+</div>
+</div>
+<p>Observa-se que:</p>
+<ul>
+<li><p><code>motivacao</code>: VIF &gt; 5</p></li>
+<li><p><code>horas_estudo</code>: VIF &gt; 5</p></li>
+</ul>
+<p>Portanto, há um forte indício de multicolinearidade entre as duas variáveis, ou seja, elas são altamente correlacionados.</p>
+</section>
+</section>
+<section id="seleção-do-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="seleção-do-modelo">5. Seleção do Modelo</h2>
+<p>Feito a análise bivariada, análise de regressão e diagnóstico de multicolinearidade do modelo, nesta etapa iremos realizar a seleção do modelo utilizando os resultados observáveis nas análises anteriores para decidir quais variáveis utilizar, etc. No final desta etapa, o objetivo é termos um modelo de regressão linear múltipla mais simples e adequado para o nosso propósito.</p>
+<p>Iniciaremos nossa seleção atulizando o modelo com o objetivo de retirar as variáveis não significativas. Após isso, utilizaremos medidas estatísticas para comparar os modelos e selecionar o mais adequado.</p>
+<p>Segue o sumário do modelo inicial para referência das variáveis significativas e não significativas:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = desempenho ~ idade + horas_estudo + frequencia + 
+    atividade_extracurricular + nivel_socioeconomico + motivacao + 
+    notas_anteriores + sono + desempenho, data = dados)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.2374 -1.3748 -0.1003  1.4228  6.0523 
+
+Coefficients:
+                              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   1.676967   1.442204   1.163    0.245    
+idade                         0.035082   0.063316   0.554    0.580    
+horas_estudo                  0.476040   0.029477  16.149  &lt; 2e-16 ***
+frequencia                    0.300170   0.009151  32.803  &lt; 2e-16 ***
+atividade_extracurricularSim  2.230537   0.135026  16.519  &lt; 2e-16 ***
+nivel_socioeconomicoBaixo     0.207329   0.191807   1.081    0.280    
+nivel_socioeconomicoMédio     0.240386   0.174924   1.374    0.170    
+motivacao                    -0.271728   0.033495  -8.112 1.59e-15 ***
+notas_anteriores              0.219761   0.045138   4.869 1.32e-06 ***
+sono                         -0.366070   0.066055  -5.542 3.91e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.992 on 915 degrees of freedom
+  (18 observations deleted due to missingness)
+Multiple R-squared:  0.675, Adjusted R-squared:  0.6718 
+F-statistic: 211.1 on 9 and 915 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<section id="remoção-das-variáveis-não-significativas" class="level3">
+<h3 class="anchored" data-anchor-id="remoção-das-variáveis-não-significativas">5.1 Remoção das Variáveis Não Significativas</h3>
+<p>Primeiramente, removeremos as variáveis não significativas <code>idade</code> e <code>nivel_socioeconomico</code> :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Removendo idade</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>modelo_sem_idade <span class="ot">&lt;-</span> <span class="fu">update</span>(modelo, . <span class="sc">~</span> . <span class="sc">-</span> idade)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): the response appeared on
+the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): problem with term 8 in
+model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Removendo nivel_socioeconomico</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>modelo_simplificado <span class="ot">&lt;-</span> <span class="fu">update</span>(modelo_sem_idade, . <span class="sc">~</span> . <span class="sc">-</span> nivel_socioeconomico)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): the response appeared on
+the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): problem with term 7 in
+model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sumario do modelo simplificado</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simplificado)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = desempenho ~ horas_estudo + frequencia + atividade_extracurricular + 
+    motivacao + notas_anteriores + sono + desempenho, data = dados)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.1448 -1.4077 -0.0889  1.4418  6.0996 
+
+Coefficients:
+                              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   2.416665   1.002754   2.410   0.0161 *  
+horas_estudo                  0.474304   0.029422  16.121  &lt; 2e-16 ***
+frequencia                    0.300280   0.009138  32.862  &lt; 2e-16 ***
+atividade_extracurricularSim  2.222924   0.134679  16.505  &lt; 2e-16 ***
+motivacao                    -0.270154   0.033451  -8.076 2.09e-15 ***
+notas_anteriores              0.220588   0.045102   4.891 1.19e-06 ***
+sono                         -0.366958   0.065913  -5.567 3.40e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.992 on 918 degrees of freedom
+  (18 observations deleted due to missingness)
+Multiple R-squared:  0.6742,    Adjusted R-squared:  0.672 
+F-statistic: 316.6 on 6 and 918 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Comparando AIC do <code>modelo_simplificado</code> e do <code>modelo</code> completo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3912.297</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_simplificado) <span class="co"># sem idade e nivel socioeconomico</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3908.553</code></pre>
+</div>
+</div>
+<p>Nota-se que o <code>modelo_completo</code> possui um AIC menor que o <code>modelo</code> inicial. Outra medida que podemos utilizar para comparar é a <strong>Critério de Informação Bayesiano (BIC).</strong> O modelo que apresentar a menor BIC são preferidos, pois apresentam melhor ajuste aos dados com número menor de parâmetros.</p>
+<p>Comparando BIC do <code>modelo_simplificado</code> e do <code>modelo</code> completo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3965.425</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modelo_simplificado)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3947.192</code></pre>
+</div>
+</div>
+<p>Isso confirma que o <code>modelo_simplificado</code> está mais ajustado e adequado para nossos propósitos.</p>
+</section>
+<section id="motivação-ou-horas-de-estudo-resolvendo-o-grande-elefante-branco-na-sala-multicolinearidade" class="level3">
+<h3 class="anchored" data-anchor-id="motivação-ou-horas-de-estudo-resolvendo-o-grande-elefante-branco-na-sala-multicolinearidade">5.2 Motivação ou Horas de Estudo? Resolvendo O Grande Elefante Branco na Sala: Multicolinearidade</h3>
+<p>Finalmente, é hora de resolvermos a multicolinearidade. Para resolver este problema, utilizaremos a mesma abordagem acima. Atualizaremos o modelo manualmente e, através dos critérios estatísticos AIC e BIC, escolheremos a variável que mais ajuda a explicar o desempenho do estudante. Para isso, precisamos relembrar que as variáveis causadoras desse problema são: <code>motivacao</code> e <code>horas_estudo</code> .</p>
+<p>Removendo <code>motivacao</code> do <code>modelo_simplificado</code> :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>modelo_sem_motivacao <span class="ot">&lt;-</span> <span class="fu">update</span>(modelo_simplificado, . <span class="sc">~</span> . <span class="sc">-</span> motivacao)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): the response appeared on
+the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): problem with term 6 in
+model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_sem_motivacao)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = desempenho ~ horas_estudo + frequencia + atividade_extracurricular + 
+    notas_anteriores + sono + desempenho, data = dados)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.0186 -1.4246 -0.0734  1.4258  5.9407 
+
+Coefficients:
+                              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   1.475033   1.030165   1.432    0.153    
+horas_estudo                  0.261267   0.013479  19.383  &lt; 2e-16 ***
+frequencia                    0.299376   0.009451  31.677  &lt; 2e-16 ***
+atividade_extracurricularSim  2.191061   0.139245  15.735  &lt; 2e-16 ***
+notas_anteriores              0.202104   0.046592   4.338 1.60e-05 ***
+sono                         -0.397516   0.068065  -5.840 7.23e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.06 on 919 degrees of freedom
+  (18 observations deleted due to missingness)
+Multiple R-squared:  0.651, Adjusted R-squared:  0.6491 
+F-statistic: 342.9 on 5 and 919 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Removendo <code>horas_estudo</code> do <code>modelo_simplificado</code> :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>modelo_sem_horas_estudo <span class="ot">&lt;-</span> <span class="fu">update</span>(modelo_simplificado, . <span class="sc">~</span> . <span class="sc">-</span> horas_estudo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): the response appeared on
+the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): problem with term 6 in
+model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_sem_horas_estudo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = desempenho ~ frequencia + atividade_extracurricular + 
+    motivacao + notas_anteriores + sono + desempenho, data = dados)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.4150 -1.4878 -0.0289  1.4296  6.7518 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   2.35316    1.12327   2.095 0.036447 *  
+frequencia                    0.29731    0.01027  28.947  &lt; 2e-16 ***
+atividade_extracurricularSim  2.16381    0.15126  14.305  &lt; 2e-16 ***
+motivacao                     0.21151    0.01666  12.693  &lt; 2e-16 ***
+notas_anteriores              0.18894    0.05086   3.715 0.000216 ***
+sono                         -0.43250    0.07405  -5.841 7.19e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.252 on 929 degrees of freedom
+  (8 observations deleted due to missingness)
+Multiple R-squared:  0.5813,    Adjusted R-squared:  0.5791 
+F-statistic:   258 on 5 and 929 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Comparando os dois modelos com as medidas <strong>AIC</strong> e <strong>BIC:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_sem_motivacao)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3970.044</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_sem_horas_estudo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4179.175</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modelo_sem_motivacao)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4003.853</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modelo_sem_horas_estudo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4213.059</code></pre>
+</div>
+</div>
+<p>Nota-se, através da análise realizada, que o modelo mais adequado e ajustado é aquele sem a variável <code>motivacao</code> e com a variável <code>horas_estudo.</code>, ou seja, o <code>modelo_sem_motivacao</code>.</p>
+</section>
 </section>
 
 </main>

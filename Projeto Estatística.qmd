@@ -210,6 +210,8 @@ Nesse contexto, iremos realizar as seguintes investigações:
 
 -   Análisar resíduos.
 
+### 4.1 Análise da Significância Estatitística das Variáveis
+
 Assim sendo, iniciaremos a análise implementando o nosso modelo e gerando um sumário estatístico. Através desse sumário, poderemos, por exemplo, avaliar a significância estatística das variáveis.
 
 Criando o modelo de regressão linear e exibindo um sumário:
@@ -226,7 +228,7 @@ summary(modelo)
 **Interpretação**: Considerando um **nível de significância de 5% (α = 0.05),** os dados do modelo de **regressão linear múltipla** e sabendo que as variáveis que são estaticamente significativas para o modelo são aquelas com **p-valor \< 0.05,** podemos concluir que as seguintes variáveis tem um efeito estatisticamente significativo para explicar o **desempenho do aluno**:
 
 | Variável | Coef. Estimado | Interpretação |
-|:---------------------------:|:-------------:|:---------------------------:|
+|:-------------------------:|:---------------:|:-------------------------:|
 | `horas_estudo` | 0.476 | A cada hora de estudo, o desempenho do aluno aumenta em 47.6%. |
 | `frequencia` | 0.300 | A cada frequência/presença do aluno nas aulas, seu desempenho aumenta em 30%. |
 | `atividade_extracurricularSim` | 2.230 | Alunos que participam de atividades extracurriculares apresenta um desempenho 2.23 maior em relação a alunos que não participam de atividades extracurriculares. |
@@ -243,3 +245,121 @@ Por fim, as seguintes variáveis não possuem um efeito estatisticamente signifi
 | `nivel_socioeconomicoMedio` |  0.170  |
 
 **Observação**: a variável `nivel_socioeconomico` é categórica. Isso significa que ela está sendo comparada a uma classe referência. No nosso caso a referência é `nivel_socioeconomicoAlto` . Como nenhuma das classes não possui um efeito estatisticamente significativo, podemos desconsiderá-la.
+
+### 4.2 Diagnóstico de Multicolinearidade
+
+Conforme observamos na análise da significância, o coeficiente estimado da variável `motivacao` resultou em um valog negativo, porém, não faz sentido, pois alunos mais motivados tendem a ter um melhor desempenho. Quando inconsistências assim ocorrem em nossa análise isso pode nos indicar que há uma **multicolinearidade** entre duas ou mais variáveis.
+
+Um dos objetivos da análise de regressão é analisar de maneira isolada a relação entre a variável de interesse (no nosso caso `desempenho`) e as demais variáveis (`idade`, `notas_anteriores`, etc.). Nesse contexto, quando duas ou mais variáveis são altamente correlacionadas fica difícil de estimar a correlação entre as variáveis de forma independente. Este problema é chamado de **multicolinearidade.**
+
+A fim de investigar se há multicolinearidade ou não em nosso modelo, utilizaremos a medida estatística conhecida como **Variance Inflation Factor (VIF).** A VIF começa com o valor 1 e não possuí um limite superior. De forma resumida ela funciona da seguinte maneira:
+
+-   VIF = 1 Indica que não há multicolinearidade;
+
+-   1 \< VIF \<= 5 indica que há uma correlação moderada
+
+-   VIF \> 5 indica que há uma forte correlação
+
+Calculando o valor da medida estatística VIF:
+
+```{r}
+if (require(car)) install.packages("car")  # pacote que possui a função vif
+library(car)
+# Imprimindo medida estatística vif para o nosso modelo
+vif(modelo) 
+```
+
+Observa-se que:
+
+-   `motivacao`: VIF \> 5
+
+-   `horas_estudo`: VIF \> 5
+
+Portanto, há um forte indício de multicolinearidade entre as duas variáveis, ou seja, elas são altamente correlacionados.
+
+## 5. Seleção do Modelo
+
+Feito a análise bivariada, análise de regressão e diagnóstico de multicolinearidade do modelo, nesta etapa iremos realizar a seleção do modelo utilizando os resultados observáveis nas análises anteriores para decidir quais variáveis utilizar, etc. No final desta etapa, o objetivo é termos um modelo de regressão linear múltipla mais simples e adequado para o nosso propósito.
+
+Iniciaremos nossa seleção atulizando o modelo com o objetivo de retirar as variáveis não significativas. Após isso, utilizaremos medidas estatísticas para comparar os modelos e selecionar o mais adequado.
+
+Segue o sumário do modelo inicial para referência das variáveis significativas e não significativas:
+
+```{r}
+summary(modelo)
+```
+
+### 5.1 Remoção das Variáveis Não Significativas
+
+Primeiramente, removeremos as variáveis não significativas `idade` e `nivel_socioeconomico` :
+
+```{r}
+# Removendo idade
+modelo_sem_idade <- update(modelo, . ~ . - idade)
+# Removendo nivel_socioeconomico
+modelo_simplificado <- update(modelo_sem_idade, . ~ . - nivel_socioeconomico)
+# Sumario do modelo simplificado
+summary(modelo_simplificado)
+```
+
+Comparando AIC do `modelo_simplificado` e do `modelo` completo:
+
+```{r}
+AIC(modelo)
+```
+
+```{r}
+AIC(modelo_simplificado) # sem idade e nivel socioeconomico
+```
+
+Nota-se que o `modelo_completo` possui um AIC menor que o `modelo` inicial. Outra medida que podemos utilizar para comparar é a **Critério de Informação Bayesiano (BIC).** O modelo que apresentar a menor BIC são preferidos, pois apresentam melhor ajuste aos dados com número menor de parâmetros.
+
+Comparando BIC do `modelo_simplificado` e do `modelo` completo:
+
+```{r}
+BIC(modelo)
+```
+
+```{r}
+BIC(modelo_simplificado)
+```
+
+Isso confirma que o `modelo_simplificado` está mais ajustado e adequado para nossos propósitos.
+
+### 5.2 Motivação ou Horas de Estudo? Resolvendo O Grande Elefante Branco na Sala: Multicolinearidade
+
+Finalmente, é hora de resolvermos a multicolinearidade. Para resolver este problema, utilizaremos a mesma abordagem acima. Atualizaremos o modelo manualmente e, através dos critérios estatísticos AIC e BIC, escolheremos a variável que mais ajuda a explicar o desempenho do estudante. Para isso, precisamos relembrar que as variáveis causadoras desse problema são: `motivacao` e `horas_estudo` .
+
+Removendo `motivacao` do `modelo_simplificado` :
+
+```{R}
+modelo_sem_motivacao <- update(modelo_simplificado, . ~ . - motivacao)
+summary(modelo_sem_motivacao)
+```
+
+Removendo `horas_estudo` do `modelo_simplificado` :
+
+```{R}
+modelo_sem_horas_estudo <- update(modelo_simplificado, . ~ . - horas_estudo)
+summary(modelo_sem_horas_estudo)
+```
+
+Comparando os dois modelos com as medidas **AIC** e **BIC:**
+
+```{R}
+AIC(modelo_sem_motivacao)
+```
+
+```{R}
+AIC(modelo_sem_horas_estudo)
+```
+
+```{R}
+BIC(modelo_sem_motivacao)
+```
+
+```{R}
+BIC(modelo_sem_horas_estudo)
+```
+
+Nota-se, através da análise realizada, que o modelo mais adequado e ajustado é aquele sem a variável `motivacao` e com a variável `horas_estudo.`, ou seja, o `modelo_sem_motivacao`.
