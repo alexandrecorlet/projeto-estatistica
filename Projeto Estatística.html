@@ -85,11 +85,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#valores-ausentes" id="toc-valores-ausentes" class="nav-link" data-scroll-target="#valores-ausentes">2.1 Valores Ausentes</a></li>
   <li><a href="#potenciais-outliers" id="toc-potenciais-outliers" class="nav-link" data-scroll-target="#potenciais-outliers">2.1 Potenciais Outliers</a></li>
   </ul></li>
-  <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3 Análise Bivariada</a>
+  <li><a href="#análise-bivariada" id="toc-análise-bivariada" class="nav-link" data-scroll-target="#análise-bivariada">3. Análise Bivariada</a>
   <ul class="collapse">
   <li><a href="#análise-bivariada-variáveis-numéricas" id="toc-análise-bivariada-variáveis-numéricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-numéricas">3.1 Análise Bivariada (Variáveis Numéricas)</a></li>
   <li><a href="#análise-bivariada-variáveis-categóricas" id="toc-análise-bivariada-variáveis-categóricas" class="nav-link" data-scroll-target="#análise-bivariada-variáveis-categóricas">3.2 Análise Bivariada (Variáveis Categóricas)</a></li>
   </ul></li>
+  <li><a href="#análise-de-regressão" id="toc-análise-de-regressão" class="nav-link" data-scroll-target="#análise-de-regressão">4. Análise de Regressão</a></li>
   </ul>
 </nav>
 </div>
@@ -426,7 +427,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="análise-bivariada" class="level2">
-<h2 class="anchored" data-anchor-id="análise-bivariada">3 Análise Bivariada</h2>
+<h2 class="anchored" data-anchor-id="análise-bivariada">3. Análise Bivariada</h2>
 <p>Nesta etapa iremos realizar uma análise entre a relação as variáveis (mais especificamente entre duas). Isto é importante pois permite identificarmos como as variáveis na base de dados influem uma na outra. Portanto, essa análise busca responder perguntas como:</p>
 <ul>
 <li><em>Será que quanto mais horas de estudos possuir maior será seu desempenho/rendimento?</em></li>
@@ -533,7 +534,7 @@ These packages will be installed into "~/Projeto Estatística/renv/library/macos
 
 # Installing packages --------------------------------------------------------
 - Installing ggplot2 ...                        OK [linked from cache]
-Successfully installed 1 package in 28 milliseconds.</code></pre>
+Successfully installed 1 package in 74 milliseconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa biblioteca ggplot2</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -566,6 +567,135 @@ Successfully installed 1 package in 28 milliseconds.</code></pre>
 </div>
 <p><strong>Conclusão</strong>: Analisando o gráfico acima, podemos observar que diferentes níveis socioeconômicos não impactam no desempenho acadêmico de um aluno. Em outras palavras, apesar de haver uma leve diferença nas medianas dos boxplot, essa diferença é mínima ou desprezível quando analisamos estatisticamente. Além disso, assim como na análise anterior, também podemos notar a presença de outliers nesse gráfico. Por fim, podemos concluir que não há uma correlação, ou seja, que estatisticamente falando, o nível socioeconômico de um aluno não impacta em seu desempenho educacional.</p>
 </section>
+</section>
+<section id="análise-de-regressão" class="level2">
+<h2 class="anchored" data-anchor-id="análise-de-regressão">4. Análise de Regressão</h2>
+<p>Nesta seção, será realizada uma <strong>análise de regressão linear múltipla</strong> com o objetivo de investigar a influência de diversas variáveis explicativas sobre a resposta <code>desempenho</code>. Essa abordagem permite quantificar a relação entre o desemepenho acadêmico e os demais fatores que vimos anteriormente (atividades extracurriculares, nível socioeconômico, etc.).</p>
+<p>Nesse contexto, iremos realizar as seguintes investigações:</p>
+<ul>
+<li><p>Diagnóstico de multicolinearidade;</p></li>
+<li><p>Avaliar a significância estatística das variáveis no contexto do modelo;</p></li>
+<li><p>Verificar a capacidade preditiva do modelo por meio do coeficiente de determinação (R²);</p></li>
+<li><p>Análisar resíduos.</p></li>
+</ul>
+<p>Assim sendo, iniciaremos a análise implementando o nosso modelo e gerando um sumário estatístico. Através desse sumário, poderemos, por exemplo, avaliar a significância estatística das variáveis.</p>
+<p>Criando o modelo de regressão linear e exibindo um sumário:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criando modelo de regressão linear</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">lm</span>(desempenho <span class="sc">~</span> idade <span class="sc">+</span> horas_estudo <span class="sc">+</span> frequencia <span class="sc">+</span> atividade_extracurricular <span class="sc">+</span> nivel_socioeconomico <span class="sc">+</span> motivacao <span class="sc">+</span> notas_anteriores <span class="sc">+</span> sono <span class="sc">+</span> desempenho, <span class="at">data =</span> dados)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): the response appeared on
+the right-hand side and was dropped</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in model.matrix.default(mt, mf, contrasts): problem with term 9 in
+model.matrix: no columns are assigned</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exibindo resultados</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = desempenho ~ idade + horas_estudo + frequencia + 
+    atividade_extracurricular + nivel_socioeconomico + motivacao + 
+    notas_anteriores + sono + desempenho, data = dados)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.2374 -1.3748 -0.1003  1.4228  6.0523 
+
+Coefficients:
+                              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   1.676967   1.442204   1.163    0.245    
+idade                         0.035082   0.063316   0.554    0.580    
+horas_estudo                  0.476040   0.029477  16.149  &lt; 2e-16 ***
+frequencia                    0.300170   0.009151  32.803  &lt; 2e-16 ***
+atividade_extracurricularSim  2.230537   0.135026  16.519  &lt; 2e-16 ***
+nivel_socioeconomicoBaixo     0.207329   0.191807   1.081    0.280    
+nivel_socioeconomicoMédio     0.240386   0.174924   1.374    0.170    
+motivacao                    -0.271728   0.033495  -8.112 1.59e-15 ***
+notas_anteriores              0.219761   0.045138   4.869 1.32e-06 ***
+sono                         -0.366070   0.066055  -5.542 3.91e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.992 on 915 degrees of freedom
+  (18 observations deleted due to missingness)
+Multiple R-squared:  0.675, Adjusted R-squared:  0.6718 
+F-statistic: 211.1 on 9 and 915 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p><strong>Interpretação</strong>: Considerando um <strong>nível de significância de 5% (α = 0.05),</strong> os dados do modelo de <strong>regressão linear múltipla</strong> e sabendo que as variáveis que são estaticamente significativas para o modelo são aquelas com <strong>p-valor &lt; 0.05,</strong> podemos concluir que as seguintes variáveis tem um efeito estatisticamente significativo para explicar o <strong>desempenho do aluno</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 39%">
+<col style="width: 20%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Variável</th>
+<th style="text-align: center;">Coef. Estimado</th>
+<th style="text-align: center;">Interpretação</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><code>horas_estudo</code></td>
+<td style="text-align: center;">0.476</td>
+<td style="text-align: center;">A cada hora de estudo, o desempenho do aluno aumenta em 47.6%.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>frequencia</code></td>
+<td style="text-align: center;">0.300</td>
+<td style="text-align: center;">A cada frequência/presença do aluno nas aulas, seu desempenho aumenta em 30%.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>atividade_extracurricularSim</code></td>
+<td style="text-align: center;">2.230</td>
+<td style="text-align: center;">Alunos que participam de atividades extracurriculares apresenta um desempenho 2.23 maior em relação a alunos que não participam de atividades extracurriculares.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>motivacao</code></td>
+<td style="text-align: center;">-0.271</td>
+<td style="text-align: center;">Alunos que são mais motivados tendem a possuir um desempenho menor, contudo, isto é indicativo de multicolinearidade, pois em nossa análise anterior, vimos que alunos com motivação maior possuem na realidade um melhor desempenho que alunos menos motivados.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>notas_anteriores</code></td>
+<td style="text-align: center;">0.219</td>
+<td style="text-align: center;">Alunos que possuem notas anteiores melhores possuem um desempenho de 21.9% melhor em relação a alunos com notas anteriores piores.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>sono</code></td>
+<td style="text-align: center;">-0.366</td>
+<td style="text-align: center;">Mais sono está associado a menor desempenho. (Isso pode indicar noites mais longas de sono em vez de tempo ideal de descanso.)</td>
+</tr>
+</tbody>
+</table>
+<p>Por fim, as seguintes variáveis não possuem um efeito estatisticamente significativo para explicar o desempenho do aluno <strong>(p-valor &gt; 0.05):</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Variável</th>
+<th style="text-align: center;">p-valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><code>idade</code></td>
+<td style="text-align: center;">0.580</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>nivel_socioeconomicoBaixo</code></td>
+<td style="text-align: center;">0.207</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>nivel_socioeconomicoMedio</code></td>
+<td style="text-align: center;">0.170</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observação</strong>: a variável <code>nivel_socioeconomico</code> é categórica. Isso significa que ela está sendo comparada a uma classe referência. No nosso caso a referência é <code>nivel_socioeconomicoAlto</code> . Como nenhuma das classes não possui um efeito estatisticamente significativo, podemos desconsiderá-la.</p>
 </section>
 
 </main>

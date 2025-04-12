@@ -115,7 +115,7 @@ Outro ponto importante observado na tabela de análise exploratória é a presen
 
 Portanto, isso indica que potencialmente precisaremos tratar este caso substituindo o valor distoante observado por 0 ou removendo-o.
 
-## 3 Análise Bivariada
+## 3. Análise Bivariada
 
 Nesta etapa iremos realizar uma análise entre a relação as variáveis (mais especificamente entre duas). Isto é importante pois permite identificarmos como as variáveis na base de dados influem uma na outra. Portanto, essa análise busca responder perguntas como:
 
@@ -195,3 +195,51 @@ ggplot(dados, aes(x = nivel_socioeconomico, y = desempenho)) + geom_boxplot() + 
 ```
 
 **Conclusão**: Analisando o gráfico acima, podemos observar que diferentes níveis socioeconômicos não impactam no desempenho acadêmico de um aluno. Em outras palavras, apesar de haver uma leve diferença nas medianas dos boxplot, essa diferença é mínima ou desprezível quando analisamos estatisticamente. Além disso, assim como na análise anterior, também podemos notar a presença de outliers nesse gráfico. Por fim, podemos concluir que não há uma correlação, ou seja, que estatisticamente falando, o nível socioeconômico de um aluno não impacta em seu desempenho educacional.
+
+## 4. Análise de Regressão
+
+Nesta seção, será realizada uma **análise de regressão linear múltipla** com o objetivo de investigar a influência de diversas variáveis explicativas sobre a resposta `desempenho`. Essa abordagem permite quantificar a relação entre o desemepenho acadêmico e os demais fatores que vimos anteriormente (atividades extracurriculares, nível socioeconômico, etc.).
+
+Nesse contexto, iremos realizar as seguintes investigações:
+
+-   Diagnóstico de multicolinearidade;
+
+-   Avaliar a significância estatística das variáveis no contexto do modelo;
+
+-   Verificar a capacidade preditiva do modelo por meio do coeficiente de determinação (R²);
+
+-   Análisar resíduos.
+
+Assim sendo, iniciaremos a análise implementando o nosso modelo e gerando um sumário estatístico. Através desse sumário, poderemos, por exemplo, avaliar a significância estatística das variáveis.
+
+Criando o modelo de regressão linear e exibindo um sumário:
+
+```{r}
+
+# Criando modelo de regressão linear
+modelo <- lm(desempenho ~ idade + horas_estudo + frequencia + atividade_extracurricular + nivel_socioeconomico + motivacao + notas_anteriores + sono + desempenho, data = dados)
+
+# Exibindo resultados
+summary(modelo)
+```
+
+**Interpretação**: Considerando um **nível de significância de 5% (α = 0.05),** os dados do modelo de **regressão linear múltipla** e sabendo que as variáveis que são estaticamente significativas para o modelo são aquelas com **p-valor \< 0.05,** podemos concluir que as seguintes variáveis tem um efeito estatisticamente significativo para explicar o **desempenho do aluno**:
+
+| Variável | Coef. Estimado | Interpretação |
+|:---------------------------:|:-------------:|:---------------------------:|
+| `horas_estudo` | 0.476 | A cada hora de estudo, o desempenho do aluno aumenta em 47.6%. |
+| `frequencia` | 0.300 | A cada frequência/presença do aluno nas aulas, seu desempenho aumenta em 30%. |
+| `atividade_extracurricularSim` | 2.230 | Alunos que participam de atividades extracurriculares apresenta um desempenho 2.23 maior em relação a alunos que não participam de atividades extracurriculares. |
+| `motivacao` | -0.271 | Alunos que são mais motivados tendem a possuir um desempenho menor, contudo, isto é indicativo de multicolinearidade, pois em nossa análise anterior, vimos que alunos com motivação maior possuem na realidade um melhor desempenho que alunos menos motivados. |
+| `notas_anteriores` | 0.219 | Alunos que possuem notas anteiores melhores possuem um desempenho de 21.9% melhor em relação a alunos com notas anteriores piores. |
+| `sono` | -0.366 | Mais sono está associado a menor desempenho. (Isso pode indicar noites mais longas de sono em vez de tempo ideal de descanso.) |
+
+Por fim, as seguintes variáveis não possuem um efeito estatisticamente significativo para explicar o desempenho do aluno **(p-valor \> 0.05):**
+
+|          Variável           | p-valor |
+|:---------------------------:|:-------:|
+|           `idade`           |  0.580  |
+| `nivel_socioeconomicoBaixo` |  0.207  |
+| `nivel_socioeconomicoMedio` |  0.170  |
+
+**Observação**: a variável `nivel_socioeconomico` é categórica. Isso significa que ela está sendo comparada a uma classe referência. No nosso caso a referência é `nivel_socioeconomicoAlto` . Como nenhuma das classes não possui um efeito estatisticamente significativo, podemos desconsiderá-la.
