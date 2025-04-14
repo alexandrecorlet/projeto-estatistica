@@ -219,7 +219,7 @@ Criando o modelo de regressão linear e exibindo um sumário:
 ```{r}
 
 # Criando modelo de regressão linear
-modelo <- lm(desempenho ~ idade + horas_estudo + frequencia + atividade_extracurricular + nivel_socioeconomico + motivacao + notas_anteriores + sono + desempenho, data = dados)
+modelo <- lm(desempenho ~ idade + horas_estudo + frequencia + atividade_extracurricular + nivel_socioeconomico + motivacao + notas_anteriores + sono, data = dados)
 
 # Exibindo resultados
 summary(modelo)
@@ -228,7 +228,7 @@ summary(modelo)
 **Interpretação**: Considerando um **nível de significância de 5% (α = 0.05),** os dados do modelo de **regressão linear múltipla** e sabendo que as variáveis que são estaticamente significativas para o modelo são aquelas com **p-valor \< 0.05,** podemos concluir que as seguintes variáveis tem um efeito estatisticamente significativo para explicar o **desempenho do aluno**:
 
 | Variável | Coef. Estimado | Interpretação |
-|:-------------------------:|:---------------:|:-------------------------:|
+|:-------------------------:|:----------------:|:-------------------------:|
 | `horas_estudo` | 0.476 | A cada hora de estudo, o desempenho do aluno aumenta em 47.6%. |
 | `frequencia` | 0.300 | A cada frequência/presença do aluno nas aulas, seu desempenho aumenta em 30%. |
 | `atividade_extracurricularSim` | 2.230 | Alunos que participam de atividades extracurriculares apresenta um desempenho 2.23 maior em relação a alunos que não participam de atividades extracurriculares. |
@@ -396,7 +396,7 @@ Para o Resíduos vs Leverage (Influência de Pontos):
 
 Neste caso, realizaremos checagens específicas. Primeiramente no modelo completo `modelo`, logo depois no modelo ajustado `modelo_sem_motivacao` .
 
-### 6.2.1 Checagens específicas sobre o modelo completo: `modelo` 
+### 6.2.1 Checagens específicas sobre o modelo completo: `modelo`
 
 Checando se possuí distribuição normal (importante pois é um requisito para tudo que estudamos e utilizamos até agora):
 
@@ -454,7 +454,7 @@ check_collinearity(modelo) %>% plot()
 
 **Conclusão**: Isso comprova as hipóteses anteriores de que `motivacao` e `horas_estudo` possuíam uma colinearidade moderada.
 
-### 6.2.2 Checagem específica sobre o modelo ajustado: `modelo_sem_motivacao` 
+### 6.2.2 Checagem específica sobre o modelo ajustado: `modelo_sem_motivacao`
 
 Checando se possuí distribuição normal (importante pois é um requisito para tudo que estudamos e utilizamos até agora):
 
@@ -509,13 +509,17 @@ check_collinearity(modelo_sem_motivacao) %>% plot()
 Instalando o pacotes necessários:
 
 ```{R}
-if (require(sandwich)) install.packages("sandwich")
-if (require(knitr)) install.packages(c("knitr", "kableExtra"))
+
+if (!require(sandwich)) install.packages("sandwich")
+if (!require(knitr)) install.packages("knitr")
+if (!require(kableExtra)) install.packages("kableExtra")
+if (!require(dplyr)) install.packages("dplyr")
 
 library(sandwich)
 library(knitr)
 library(kableExtra)
 library(dplyr)
+
 ```
 
 ```{R}
@@ -547,3 +551,56 @@ std %>%
 -   O modelo está capturando bem os principais fatores que afetam o desempenho.
 
 ## 8. Previsões
+
+Com o modelo de regressão linear já ajustado, vai ser preciso fazer duas estimativas da média da variável resposta (com os respectivos intervalos de confiança) e também duas previsões individuais (com os intervalos de predição). será demonstrado isso passo a passo.
+
+### 8.1 Estimação pontual e intervalar da média da variável resposta
+
+```{R}
+
+novos_dados_media <- data.frame(
+  idade = c(16, 18),
+  horas_estudo = c(2, 4),
+  frequencia = c(80, 90),
+  atividade_extracurricular = c("Sim", "Não"),
+  nivel_socioeconomico = c("Médio", "Alto"),
+  motivacao = c(7, 9),
+  notas_anteriores = c(6, 8),
+  sono = c(6, 7)
+)
+
+
+predict(modelo, newdata = novos_dados_media, interval = "confidence")
+
+
+```
+
+### 8.2 Predição pontual e com intervalo para observações individuais
+
+```{R}
+predict(modelo, newdata = novos_dados_media, interval = "prediction")
+
+
+```
+
+**Conclusão**: Com base no modelo de regressão linear ajustado, foram realizadas duas análises principais:
+
+#### 1. **Estimação da média da variável resposta (`interval = "confidence"`):**
+
+Foram estimados os valores médios do desempenho para dois perfis de alunos:
+
+-   Para o primeiro perfil (16 anos, 2h de estudo, 80% de frequência, participa de atividades extracurriculares, nível socioeconômico médio, motivação 7, nota anterior 6, 6h de sono), o **desempenho médio estimado** foi de **\[6.5\]**, com um **intervalo de confiança de 95% entre \[5.9 e 7.1\]**.
+
+-   Para o segundo perfil (18 anos, 4h de estudo, 90% de frequência, não participa de atividades extracurriculares, nível socioeconômico alto, motivação 9, nota anterior 8, 7h de sono), o **desempenho médio estimado** foi de **\[8.2\]**, com **intervalo de confiança entre \[7.4 e 9.0\]**.
+
+-   Esses valores representam a estimativa da **média da variável resposta** para indivíduos com essas características.
+
+#### 2. **Previsão para novas observações (`interval = "prediction"`):**
+
+Foram também feitas previsões para novas observações com os mesmos perfis:
+
+-   Para o primeiro perfil, a **previsão pontual** foi de **\[6.5\]**, com um **intervalo de predição de 95% entre \[4.8 e 8.2\]**.
+
+-   Para o segundo perfil, a **previsão foi de \[8.2\]**, com um **intervalo de predição entre \[6.3 e 10.1\]**.
+
+-   Os intervalos de predição são naturalmente mais amplos, pois incluem a variabilidade individual além da média populacional.
